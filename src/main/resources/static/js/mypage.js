@@ -5,11 +5,11 @@
     */
     // 
 // Scripts
-// 
-
-window.addEventListener('DOMContentLoaded', event => {
-
+//
     // Toggle the side navigation
+
+$(document).ready(()=>{
+    //대회 정보 불러오기
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
     if (sidebarToggle) {
         // Uncomment Below to persist sidebar toggle between refreshes
@@ -22,25 +22,31 @@ window.addEventListener('DOMContentLoaded', event => {
             localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
         });
     }
-
-});
-
-$(document).ready(()=>{
+   $('#probleminfo').DataTable({
+         ordering: false,
+         pageLength:5
+   });
+    $('#bookmarkedproblems').DataTable({
+        ordering:false,
+        pageLength:5
+    });
     $.ajax({ url: "http://codeforces.com/api/contest.list?gym=false",
         data: { },
     })
     .done((json)=> {
-        var tb=$('tbody');
-        json.result.forEach( (element) => {
-            var contestHtml="<tr>";
-            contestHtml+=`<td><a  href="https://codeforces.com/contest/${element.id}" >`+String(element.id)+"</a></td>";
-            contestHtml+="<td>"+element.name+"</td>";
-            contestHtml+="</tr>";
-            tb.append(contestHtml);
-        });
-        const datatablesSimple = document.getElementById('datatablesSimple');
-       if (datatablesSimple) {
-           new simpleDatatables.DataTable(datatablesSimple);
-       }
+       var data=json.result;
+       data.forEach((element)=>{ element.id=`<a href="https://codeforces.com/contest/${element.id}" >${String(element.id)}</a>`}); //링크 삽입
+       $('#contest').DataTable({
+            data:data,
+             columns: [
+                    { data: 'id' },
+                    { data: 'name' },
+             ],
+             ordering: false,
+             pageLength: 5
+
+       });
+
     });
+
 });
