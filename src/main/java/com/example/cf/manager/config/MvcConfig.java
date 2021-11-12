@@ -9,8 +9,8 @@ public class MvcConfig implements WebMvcConfigurer {
     // 요청 - 뷰 연결
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("index");
-        registry.addViewController("/login").setViewName("login");
+        registry.addViewController("/login").setViewName("user/login");
         registry.addViewController("/admin").setViewName("admin");
-        registry.addViewController("/signup").setViewName("signup");
+        registry.addViewController("/signup").setViewName("user/signup");
     }
 }

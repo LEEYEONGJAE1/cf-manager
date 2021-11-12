@@ -23,11 +23,9 @@ $(document).ready(()=>{
         });
     }
    $('#probleminfo').DataTable({
-         ordering: false,
          pageLength:5
    });
     $('#bookmarkedproblems').DataTable({
-        ordering:false,
         pageLength:5
     });
     $.ajax({ url: "http://codeforces.com/api/contest.list?gym=false",
