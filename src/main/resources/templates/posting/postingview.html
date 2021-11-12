@@ -68,7 +68,9 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
-                <h1 class="mt-4">글 보기</h1>
+                <h1 class="mt-4">글 보기</h1><br>
+                <button type="button" class="btn btn-default" th:onclick="location.href='/question'"><span class="glyphicon glyphicon-list"></span>글 목록</button><br>
+
                 <div class="card mb-4">
                     <div class="card-header">
                         <span th:text="| 제목: ${posting.title} 작성자: ${posting.userinfo.userid} 작성 날짜:${posting.addedTime} 조회수:${posting.views}|" class="glyphicon glyphicon-list-alt">
@@ -84,7 +86,39 @@
 
                         <p th:text="${posting.contents}"></p>
                     </div>
-
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <span class="glyphicon glyphicon-user">댓글</span>
+                    </div>
+                    <div class="card-body">
+                        <table id="ctable">
+                            <thead>
+                            </thead>
+                            <tbody>
+                                <tr th:each="comment:${comments}">
+                                    <td>
+                                        <p th:text="${comment.contents}"></p>
+                                    </td>
+                                    <td>
+                                        <p th:text="|작성자: ${comment.userinfo.userid}|"></p>
+                                    </td>
+                                    <td>
+                                        <p th:text="|작성 시간: ${comment.addedTime}|"></p>
+                                    </td>
+                                    <td>
+                                        <button th:if="${comment.userinfo.userid}==${#authentication.principal.username}" type="button" class="btn btn-default" th:onclick="|location.href='/cdelete/${posting.code}/${comment.id}'|"><span class="glyphicon glyphicon-remove"></span>삭제</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <form th:action="@{'/postingview/' + ${posting.code}}" method="post">
+                            <textarea name="contents" type="text" class="form-control" rows="3" required="required"></textarea>
+                            <div class="mt-4 mb-0">
+                                <button type="submit" class="btn btn-primary">댓글 등록하기</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </main>

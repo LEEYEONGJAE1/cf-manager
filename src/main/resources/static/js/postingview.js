@@ -13,6 +13,8 @@ $(document).ready(()=>{
             localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
         });
     }
+    $('#ctable').DataTable({
 
+    });
 
 });

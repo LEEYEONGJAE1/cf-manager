@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @NoArgsConstructor
 @Entity
@@ -22,6 +24,9 @@ public class PostingInfo {
     @JoinColumn(name="userid")
     private UserInfo userinfo;
 
+    @OneToMany(mappedBy = "postinginfo", cascade = CascadeType.REMOVE) //영속성
+    private List<CommentInfo> commentInfos = new ArrayList<>();
+
     @Column(name="title")
     private String title;
 
@@ -36,6 +41,7 @@ public class PostingInfo {
 
     @Column(name="likes")
     private Long likes;
+
 
     @Builder
     public PostingInfo(UserInfo userinfo, String title,String contents,String addedTime,Long views,Long likes) {

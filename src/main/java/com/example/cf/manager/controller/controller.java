@@ -1,12 +1,11 @@
 package com.example.cf.manager.controller;
 
-import com.example.cf.manager.domain.PostingInfo;
-import com.example.cf.manager.domain.ProblemInfo;
-import com.example.cf.manager.domain.SiteInfos;
-import com.example.cf.manager.domain.UserInfo;
+import com.example.cf.manager.domain.*;
+import com.example.cf.manager.dto.CommentInfoDto;
 import com.example.cf.manager.dto.PostingInfoDto;
 import com.example.cf.manager.dto.ProblemInfoDto;
 import com.example.cf.manager.dto.UserInfoDto;
+import com.example.cf.manager.service.CommentService;
 import com.example.cf.manager.service.PostingService;
 import com.example.cf.manager.service.ProblemService;
 import com.example.cf.manager.service.UserService;
@@ -23,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +37,8 @@ public class controller {
     private final ProblemService problemService;
     @Autowired
     private final PostingService postingService;
+    @Autowired
+    private final CommentService commentService;
 
     @GetMapping(value = "/logout")
     public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
@@ -71,6 +73,8 @@ public class controller {
     public String deleteproblem(@PathVariable("code") String problemcode){
         Long code=Long.parseLong(problemcode);
         System.out.println(code);
+        Optional<PostingInfo> temp = postingService.findById(code);
+        commentService.findAndDeleteByPosting(temp.get());
         problemService.deleteProblem(code);
         return "redirect:/addproblem";
     }
@@ -159,6 +163,7 @@ public class controller {
         Optional<PostingInfo> temp=postingService.findById(c);
 
         if(temp.isPresent()) {
+            model.addAttribute("comments",commentService.findByPosting(temp.get()));
             model.addAttribute("onlineJudgeSites", new SiteInfos().getList());
             model.addAttribute("posting", temp.get());
             return "posting/postingview";
@@ -166,6 +171,25 @@ public class controller {
         return "redirect:/question";
     }
 
+    @PostMapping("/postingview/{code}")
+    public String postComment(@PathVariable("code") Long code,CommentInfoDto commentdto,Authentication authentication){
+        UserInfo writer=(UserInfo) authentication.getPrincipal();
+        commentdto.setUserinfo(writer);
+        SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
+        commentdto.setAddedTime(format.format(new Date()));
+        System.out.println(postingService.findById(code).get().getTitle());
+        commentdto.setPostinginfo(postingService.findById(code).get());
+        commentService.save(commentdto);
+        return "redirect:/postingview/"+Long.toString(code);
+    }
+
+    @GetMapping("/cdelete/{pcode}/{ccode}")
+    public String deleteComment(@PathVariable("ccode") Long code,@PathVariable("pcode") Long pcode,Authentication authentication){
+        UserInfo me=(UserInfo) authentication.getPrincipal();
+        if(me.getUserid()==commentService.findById(code).get().getUserinfo().getUserid())
+            commentService.delete(code);
+        return "redirect:/postingview/"+Long.toString(pcode);
+    }
     public Boolean checkUser(Long code,Authentication authentication){
         UserInfo me=(UserInfo) authentication.getPrincipal();
         if(me.getUserid()==postingService.findById(code).get().getUserinfo().getUserid())
