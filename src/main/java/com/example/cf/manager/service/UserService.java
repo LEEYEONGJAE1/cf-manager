@@ -30,6 +30,11 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException((userid)));
     }
 
+    public Boolean exists(String userid){
+        Boolean ret=userRepository.existsByUserid(userid);
+        return ret;
+    }
+
     public Long save(UserInfoDto infoDto) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         infoDto.setPassword(encoder.encode(infoDto.getPassword()));

@@ -190,6 +190,19 @@ public class controller {
             commentService.delete(code);
         return "redirect:/postingview/"+Long.toString(pcode);
     }
+
+    @RequestMapping(value="/idcheck",method = RequestMethod.POST)
+    @ResponseBody
+    public int validId(UserInfoDto userInfoDto){
+        System.out.println(userInfoDto.getUserid());
+        if(userService.exists(userInfoDto.getUserid())){
+            return 0;
+        }
+        else{
+            return 1;
+        }
+    }
+
     public Boolean checkUser(Long code,Authentication authentication){
         UserInfo me=(UserInfo) authentication.getPrincipal();
         if(me.getUserid()==postingService.findById(code).get().getUserinfo().getUserid())
