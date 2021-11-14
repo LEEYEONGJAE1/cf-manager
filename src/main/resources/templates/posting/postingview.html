@@ -84,7 +84,8 @@
                     </div>
                     <div class="card-body">
 
-                        <p th:text="${posting.contents}"></p>
+                        <p th:utext="${#strings.replace(posting.contents, newLineChar, '&lt;br /&gt;')}"></p>
+
                     </div>
                 </div>
                 <div class="card mb-4">

@@ -8,7 +8,6 @@ $(document).ready(()=>{
 
     $("#submitbtn").hide();
 
-    var idcheck=0,pwdcheck=0;
 
     $("#pwdConfirm").keyup(()=>{
         var pwd=$("#pwd").val();
@@ -18,18 +17,16 @@ $(document).ready(()=>{
                 $("#alert-success").show();
                 $("#alert-danger").hide();
                 $("#submitbtn").show();
-                pwdcheck=1;
             }
             else{
                 $("#alert-success").hide();
                 $("#alert-danger").show();
-                    $("#submitbtn").hide();
-
-                pwdcheck=0;
+                $("#submitbtn").hide();
             }
         }
     });
     $("#idCheckValid").click(()=>{
+        console.log("idchk");
         $.ajax({
             url: "/idcheck",
             type: "post",

@@ -84,7 +84,8 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <textarea name="contents" type="text"  class="form-control" rows="3" required="required">
+                            <textarea name="contents" type="text"  class="form-control" rows="3" required="required" th:value="${posting.contents}" th:text="${posting.contents}">
+
                             </textarea>
                             <div class="mt-4 mb-0">
                                 <button type="submit" class="btn btn-primary">글 수정하기</button>
