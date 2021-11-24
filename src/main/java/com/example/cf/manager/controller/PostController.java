@@ -26,29 +26,25 @@ import java.util.Optional;
 @Controller
 public class PostController {
     @Autowired
-    private final UserService userService;
-    @Autowired
-    private final ProblemService problemService;
-    @Autowired
     private final PostingService postingService;
     @Autowired
     private final CommentService commentService;
 
-    @GetMapping("/question")
+    @GetMapping("/posting/question")
     public String question(Model model){
         model.addAttribute("postings",postingService.findAll());
         model.addAttribute("onlineJudgeSites", new SiteInfos().getList());
         return "posting/question";
     }
 
-    @GetMapping("/addposting")
+    @GetMapping("/posting/create")
     public String addposting(Model model, Principal principal){
         model.addAttribute("form", new PostingInfoDto());
         model.addAttribute("onlineJudgeSites", new SiteInfos().getList());
-        return "posting/addposting";
+        return "posting/create";
     }
 
-    @PostMapping("/addposting")
+    @PostMapping("/posting/create")
     public String addpost(@ModelAttribute("form") PostingInfoDto postingInfoDto, Authentication authentication){
         UserInfo writer=(UserInfo) authentication.getPrincipal();
         System.out.println(authentication.getPrincipal().getClass().getName());
@@ -58,69 +54,66 @@ public class PostController {
         SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
         postingInfoDto.setAddedTime(format.format(new Date()));
         postingService.save(postingInfoDto);
-        return "redirect:/question";
+        return "redirect:/posting/question";
     }
 
     @GetMapping("/deleteposting/{code}")
     public String deletePost(@PathVariable("code") Long code, Authentication authentication){
         if(checkUser(code,authentication))
             postingService.delete(code);
-        return "redirect:/question";
+        return "redirect:/posting/question";
     }
 
-    @GetMapping("/editposting/{code}")
+    @GetMapping("/posting/update/{code}")
     public String editPost(@PathVariable("code") Long code,Model model,Authentication authentication){
         if(checkUser(code,authentication)) {
             Optional<PostingInfo> temp = postingService.findById(code);
             if (temp.isPresent()) {
                 model.addAttribute("posting", temp.get());
                 model.addAttribute("onlineJudgeSites", new SiteInfos().getList());
-                return "posting/editposting";
+                return "posting/update";
             }
         }
-        return "redirect:/question";
+        return "redirect:/posting/question";
     }
 
-    @PutMapping("/editposting/{code}")
-    public String getEdit(@PathVariable("code") Long code, PostingInfoDto postingdto,Authentication authentication){
+    @PutMapping("/posting/update/{code}")
+    public String putEdit(@PathVariable("code") Long code, PostingInfoDto postingdto,Authentication authentication){
         if(checkUser(code,authentication))
             postingService.update(code,postingdto);
-        return "redirect:/question";
+        return "redirect:/posting/question";
     }
 
-    @GetMapping("/postingview/{code}")
-    public String postingview(@PathVariable("code") String code,Model model){
-        Long c=Long.parseLong(code);
-        Optional<PostingInfo> temp=postingService.findById(c);
-
-        if(temp.isPresent()) {
-            model.addAttribute("comments",commentService.findByPosting(temp.get()));
+    @GetMapping("/posting/view/{code}")
+    public String viewPosting(@PathVariable("code") Long code,Model model){
+        Optional<PostingInfo> postingInfo=postingService.findById(code);
+        if(postingInfo.isPresent()) {
+            model.addAttribute("comments",commentService.findByPosting(postingInfo.get()));
             model.addAttribute("onlineJudgeSites", new SiteInfos().getList());
-            model.addAttribute("posting", temp.get());
+            model.addAttribute("posting", postingInfo.get());
             model.addAttribute("newLineChar", '\n');
-            return "posting/postingview";
+            return "posting/view";
         }
-        return "redirect:/question";
+        return "redirect:/posting/question";
     }
 
-    @PostMapping("/postingview/{code}")
-    public String postComment(@PathVariable("code") Long code, CommentInfoDto commentdto, Authentication authentication){
-        UserInfo writer=(UserInfo) authentication.getPrincipal();
-        commentdto.setUserinfo(writer);
+    @PostMapping("/posting/view/{code}")
+    public String postComment(@PathVariable("code") Long code, CommentInfoDto commentDTO, Authentication authentication){
+        UserInfo writerInfo=(UserInfo) authentication.getPrincipal();
+        commentDTO.setUserinfo(writerInfo);
         SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
-        commentdto.setAddedTime(format.format(new Date()));
-        System.out.println(postingService.findById(code).get().getTitle());
-        commentdto.setPostinginfo(postingService.findById(code).get());
-        commentService.save(commentdto);
-        return "redirect:/postingview/"+Long.toString(code);
+        commentDTO.setAddedTime(format.format(new Date()));
+        commentDTO.setPostinginfo(postingService.findById(code).get());
+        commentService.save(commentDTO);
+        return "redirect:/posting/view/"+Long.toString(code);
     }
 
     @GetMapping("/cdelete/{pcode}/{ccode}")
-    public String deleteComment(@PathVariable("ccode") Long code,@PathVariable("pcode") Long pcode,Authentication authentication){
-        UserInfo me=(UserInfo) authentication.getPrincipal();
-        if(me.getUserid()==commentService.findById(code).get().getUserinfo().getUserid())
-            commentService.delete(code);
-        return "redirect:/postingview/"+Long.toString(pcode);
+    public String deleteComment(@PathVariable("ccode") Long userCode,@PathVariable("pcode") Long postingCode,Authentication authentication){
+        UserInfo myInfo=(UserInfo) authentication.getPrincipal();
+        if(myInfo.getUserid()==commentService.findById(userCode).get().getUserinfo().getUserid())
+            commentService.delete(userCode);
+        return "redirect:/posting/view/"+Long.toString(postingCode);
     }
 
     public Boolean checkUser(Long code,Authentication authentication){

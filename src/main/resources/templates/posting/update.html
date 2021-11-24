@@ -74,18 +74,21 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
-                <h1 class="mt-4">글 작성하기</h1>
+                <h1 class="mt-4">글 수정하기</h1>
                 <div class="card mb-4">
-                    <form  th:action th:object="${form}" method="post">
+                    <form th:action="@{'/posting/update/' + ${posting.code}}" method="post">
+                        <input type="hidden" name="_method" value="put"/>
                         <div class="card-header">
                             <div class="form-group">
-                                <input th:field="*{title}" type="text" class="form-control" placeholder="글 제목을 입력하세요" required="required">
+                                <input name="title" type="text" class="form-control"  th:value="${posting.title}" required="required">
                             </div>
                         </div>
                         <div class="card-body">
-                            <textarea  th:field="*{contents}" name="content" class="form-control"  rows="20" placeholder="글 내용을 입력하세요" required="required"></textarea>
+                            <textarea name="contents" type="text"  class="form-control" rows="3" required="required" th:value="${posting.contents}" th:text="${posting.contents}">
+
+                            </textarea>
                             <div class="mt-4 mb-0">
-                                <button type="submit" class="btn btn-primary">글 등록하기</button>
+                                <button type="submit" class="btn btn-primary">글 수정하기</button>
                             </div>
                         </div>
                     </form>
@@ -113,6 +116,6 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
 <link rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light/all.min.css" />
 <script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
-<script src="/js/addposting.js"></script>
+<script src="/js/posting/update.js"></script>
 </body>
 </html>

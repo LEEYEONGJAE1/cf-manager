@@ -69,7 +69,7 @@
         <main>
             <div class="container-fluid px-4">
                 <h1 class="mt-4">글 보기</h1><br>
-                <button type="button" class="btn btn-default" th:onclick="location.href='/question'"><span class="glyphicon glyphicon-list"></span>글 목록</button><br>
+                <button type="button" class="btn btn-default" th:onclick="location.href='/posting/question'"><span class="glyphicon glyphicon-list"></span>글 목록</button><br>
 
                 <div class="card mb-4">
                     <div class="card-header">
@@ -77,7 +77,7 @@
                         </span>
                         <div th:if="${posting.userinfo.userid}==${#authentication.principal.username}" class="btn-group" role="group" aria-label="...">
 
-                            <button type="button" class="btn btn-default" th:onclick="|location.href='/editposting/${posting.code}'|"><span class="glyphicon glyphicon-refresh"></span>수정</button>
+                            <button type="button" class="btn btn-default" th:onclick="|location.href='/posting/update/${posting.code}'|"><span class="glyphicon glyphicon-refresh"></span>수정</button>
                             <button type="button" class="btn btn-default" th:onclick="|location.href='/deleteposting/${posting.code}'|"><span class="glyphicon glyphicon-remove"></span>삭제</button>
 
                         </div>
@@ -113,7 +113,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <form th:action="@{'/postingview/' + ${posting.code}}" method="post">
+                        <form th:action="@{'/posting/view/' + ${posting.code}}" method="post">
                             <textarea name="contents" type="text" class="form-control" rows="3" required="required"></textarea>
                             <div class="mt-4 mb-0">
                                 <button type="submit" class="btn btn-primary">댓글 등록하기</button>
@@ -142,7 +142,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
 <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
-<script src="/js/postingview.js"></script>
+<script src="/js/posting/view.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
 </body>

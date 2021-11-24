@@ -27,61 +27,47 @@ import java.util.Optional;
 @Controller
 public class ProblemController {
     @Autowired
-    private final UserService userService;
-    @Autowired
     private final ProblemService problemService;
-    @Autowired
-    private final PostingService postingService;
-    @Autowired
-    private final CommentService commentService;
-    @GetMapping("/addproblem")
-    public String addpview(Model model, Principal principal){
+    @GetMapping("/problem/create")
+    public String viewProblems(Model model, Principal principal){
         model.addAttribute("form", new ProblemInfoDto());
         List<ProblemInfo> p=problemService.pinfo(principal.getName());
         model.addAttribute("problems",p);
-        return "problem/addproblem";
+        return "problem/create";
     }
 
-    @PostMapping("/addproblem")
-    public String addppost(@ModelAttribute("form") ProblemInfoDto problemDto, Principal principal){
+    @PostMapping("/problem/create")
+    public String createProblem(@ModelAttribute("form") ProblemInfoDto problemDto, Principal principal){
         problemDto.setUserid(principal.getName());
         SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
         problemDto.setAddedTime(format.format(new Date()));
         problemService.save(problemDto);
-        return "redirect:/addproblem";
+        return "redirect:/problem/create";
     }
 
     @GetMapping("/deleteproblem/{code}")
-    public String deleteproblem(@PathVariable("code") String problemcode){
-        Long code=Long.parseLong(problemcode);
-        System.out.println(code);
-        Optional<PostingInfo> temp = postingService.findById(code);
-        commentService.findAndDeleteByPosting(temp.get());
+    public String deleteProblem(@PathVariable("code") Long code){
         problemService.deleteProblem(code);
-        return "redirect:/addproblem";
+        return "redirect:/problem/create";
     }
 
     @GetMapping("/deletebookmark/{code}")
-    public String deletebookmark(@PathVariable("code") String problemcode){
-        Long code=Long.parseLong(problemcode);
-        System.out.println(code);
+    public String deleteBookmark(@PathVariable("code") Long code){
         problemService.deleteBookmark(code);
         return "redirect:/mypage";
     }
 
     @GetMapping("/addbookmark/{code}")
-    public String addbookmark(@PathVariable("code") String problemcode){
-        Long code=Long.parseLong(problemcode);
-        System.out.println(code);
+    public String addBookmark(@PathVariable("code") Long code){
         problemService.addBookmark(code);
         return "redirect:/mypage";
     }
 
     @GetMapping("/mypage")
-    public String mypage(Model model,Principal principal){
+    public String getMypage(Model model,Principal principal){
         List<ProblemInfo> p=problemService.pinfo(principal.getName());
         model.addAttribute("problems",p);
-        model.addAttribute("onlineJudgeSites", new SiteInfos().getList());
+        model.addAttribute("onlineJudgeSites", new SiteInfos().getList()); //온라인 저지 사이트 목록
         return "problem/mypage";
     }
 
