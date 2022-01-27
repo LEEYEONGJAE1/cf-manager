@@ -33,6 +33,7 @@ public class ProblemService {
         temp.setBookmarked(Boolean.FALSE);
         problemRepository.save(temp);
     }
+
     public Long save(ProblemInfoDto problemDto) {
 
         return problemRepository.save(ProblemInfo.builder()

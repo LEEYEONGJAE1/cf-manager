@@ -8,7 +8,7 @@ import com.example.cf.manager.dto.ProblemInfoDto;
 import com.example.cf.manager.dto.UserInfoDto;
 import com.example.cf.manager.repository.PostingRepository;
 import lombok.RequiredArgsConstructor;
-import org.h2.engine.User;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,8 +48,14 @@ public class PostingService {
         originalposting.get().setContents(newposting.getContents());
         postingRepository.save(originalposting.get());
     }
-    public void delete(Long code){
-        postingRepository.deleteById(code);
+
+    public void delete(Long code, Authentication authentication){
+        UserInfo me=(UserInfo) authentication.getPrincipal();
+        if(me.getUserid().equals(postingRepository.findById(code).get().getUserinfo().getUserid())) {
+            postingRepository.deleteById(code);
+            System.out.println("deleted successfully");
+        }
+        System.out.println("not deleted");
     }
 
     public Long save(PostingInfoDto postingDto) {

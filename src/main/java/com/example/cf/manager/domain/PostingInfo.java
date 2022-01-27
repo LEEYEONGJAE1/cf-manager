@@ -42,7 +42,6 @@ public class PostingInfo {
     @Column(name="likes")
     private Long likes;
 
-
     @Builder
     public PostingInfo(UserInfo userinfo, String title,String contents,String addedTime,Long views,Long likes) {
         this.userinfo = userinfo;

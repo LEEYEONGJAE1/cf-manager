@@ -24,13 +24,13 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Controller
-public class PostController {
+public class PostingController {
     @Autowired
     private final PostingService postingService;
     @Autowired
     private final CommentService commentService;
 
-    @GetMapping("/posting/question")
+    @GetMapping("/question")
     public String question(Model model){
         model.addAttribute("postings",postingService.findAll());
         model.addAttribute("onlineJudgeSites", new SiteInfos().getList());
@@ -54,14 +54,13 @@ public class PostController {
         SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
         postingInfoDto.setAddedTime(format.format(new Date()));
         postingService.save(postingInfoDto);
-        return "redirect:/posting/question";
+        return "redirect:/question";
     }
 
-    @GetMapping("/deleteposting/{code}")
-    public String deletePost(@PathVariable("code") Long code, Authentication authentication){
-        if(checkUser(code,authentication))
-            postingService.delete(code);
-        return "redirect:/posting/question";
+    @PostMapping("/deleteposting")
+    public String deletePost(PostingInfoDto postingInfoDto,Authentication authentication){
+        postingService.delete(postingInfoDto.getCode(),authentication);
+        return "redirect:/question";
     }
 
     @GetMapping("/posting/update/{code}")
@@ -74,14 +73,14 @@ public class PostController {
                 return "posting/update";
             }
         }
-        return "redirect:/posting/question";
+        return "redirect:/question";
     }
 
     @PutMapping("/posting/update/{code}")
     public String putEdit(@PathVariable("code") Long code, PostingInfoDto postingdto,Authentication authentication){
         if(checkUser(code,authentication))
             postingService.update(code,postingdto);
-        return "redirect:/posting/question";
+        return "redirect:/question";
     }
 
     @GetMapping("/posting/view/{code}")
@@ -94,7 +93,7 @@ public class PostController {
             model.addAttribute("newLineChar", '\n');
             return "posting/view";
         }
-        return "redirect:/posting/question";
+        return "redirect:/question";
     }
 
     @PostMapping("/posting/view/{code}")
@@ -118,7 +117,7 @@ public class PostController {
 
     public Boolean checkUser(Long code,Authentication authentication){
         UserInfo me=(UserInfo) authentication.getPrincipal();
-        if(me.getUserid()==postingService.findById(code).get().getUserinfo().getUserid())
+        if(me.getUserid().equals(postingService.findById(code).get().getUserinfo().getUserid()))
             return Boolean.TRUE;
         return Boolean.FALSE;
     }

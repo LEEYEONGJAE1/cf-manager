@@ -19,7 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter { // 2
 
     @Override
     public void configure(WebSecurity web) { // 4@Override
-            web.ignoring().antMatchers("/css/**", "/js/**" , "/h2-console/**","/error", "/assets/**");
+            web.ignoring().antMatchers("/css/**", "/js/**" ,"/error", "/assets/**");
 
     }
 

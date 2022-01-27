@@ -22,11 +22,6 @@ public class CommentService {
     public Optional<CommentInfo> findById(Long id){
         return commentRepository.findById(id);
     }
-    public void update(Long code,CommentInfoDto newcomment){
-        Optional<CommentInfo> originalcomment=commentRepository.findById(code);
-        originalcomment.get().setContents(newcomment.getContents());
-        commentRepository.save(originalcomment.get());
-    }
 
     public void delete(Long code){
         commentRepository.deleteById(code);
@@ -35,6 +30,7 @@ public class CommentService {
     public void findAndDeleteByPosting(PostingInfo posting){
         commentRepository.deleteAllByPostinginfo(posting);
     }
+
     public Long save(CommentInfoDto commentinfodto) {
         return commentRepository.save(
                 CommentInfo.builder()

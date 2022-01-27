@@ -10,13 +10,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.*;
 
 @RequiredArgsConstructor
 @Service
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-
+    public static Boolean tableExistVariable=Boolean.FALSE;
     /**
      * Spring Security 필수 메소드 구현
      *
@@ -31,7 +32,7 @@ public class UserService implements UserDetailsService {
     }
 
     public Boolean exists(String userid){
-        Boolean ret=userRepository.existsByUserid(userid);
+        Boolean ret = userRepository.existsByUserid(userid);
         return ret;
     }
 

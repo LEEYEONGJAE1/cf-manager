@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,7 +53,7 @@ public class UserController {
     @ResponseBody
     public int validId(UserInfoDto userInfoDto){
         System.out.println(userInfoDto.getUserid());
-        if(userService.exists(userInfoDto.getUserid())){
+       if(userService.exists(userInfoDto.getUserid())){
             return 0;
         }
         else{

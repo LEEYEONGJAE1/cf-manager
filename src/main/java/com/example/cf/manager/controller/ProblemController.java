@@ -28,6 +28,7 @@ import java.util.Optional;
 public class ProblemController {
     @Autowired
     private final ProblemService problemService;
+
     @GetMapping("/problem/create")
     public String viewProblems(Model model, Principal principal){
         model.addAttribute("form", new ProblemInfoDto());
