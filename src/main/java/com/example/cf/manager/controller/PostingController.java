@@ -87,6 +87,7 @@ public class PostingController {
     public String viewPosting(@PathVariable("code") Long code,Model model){
         Optional<PostingInfo> postingInfo=postingService.findById(code);
         if(postingInfo.isPresent()) {
+            postingService.increaseView(code,1);
             model.addAttribute("comments",commentService.findByPosting(postingInfo.get()));
             model.addAttribute("onlineJudgeSites", new SiteInfos().getList());
             model.addAttribute("posting", postingInfo.get());
@@ -110,7 +111,7 @@ public class PostingController {
     @GetMapping("/cdelete/{pcode}/{ccode}")
     public String deleteComment(@PathVariable("ccode") Long userCode,@PathVariable("pcode") Long postingCode,Authentication authentication){
         UserInfo myInfo=(UserInfo) authentication.getPrincipal();
-        if(myInfo.getUserid()==commentService.findById(userCode).get().getUserinfo().getUserid())
+        if(myInfo.getUserid().equals(commentService.findById(userCode).get().getUserinfo().getUserid()))
             commentService.delete(userCode);
         return "redirect:/posting/view/"+Long.toString(postingCode);
     }

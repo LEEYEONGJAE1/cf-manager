@@ -1,4 +1,20 @@
+var IdChecked=false;
+var PwdChecked=false;
+var CodeChecked=true;
+var signUpValid=()=>{
+    if(IdChecked&&PwdChecked&&CodeChecked){
+        $("#submitbtn").show();
+    }
+    else{
+        $("#submitbtn").hide();
+    }
+}
+
 $(document).ready(()=>{
+
+
+    $("#codealert-success").hide();
+    $("#codealert-danger").hide();
 
     $("#alert-success").hide();
     $("#alert-danger").hide();
@@ -8,6 +24,20 @@ $(document).ready(()=>{
 
     $("#submitbtn").hide();
 
+    $("#checkAdminCode").keyup(()=>{
+      var AdminCode=$("#checkAdminCode").val();
+      if(AdminCode==="0000"){
+        $("#codealert-success").show();
+        $("#codealert-danger").hide();
+        CodeChecked=true;
+      }
+      else{
+        $("#codealert-success").hide();
+        $("#codealert-danger").show();
+        Codechecked=false;
+      }
+      signUpValid();
+    });
 
     $("#pwdConfirm").keyup(()=>{
         var pwd=$("#pwd").val();
@@ -16,16 +46,17 @@ $(document).ready(()=>{
             if(pwd == conf){
                 $("#alert-success").show();
                 $("#alert-danger").hide();
-                $("#submitbtn").show();
+                PwdChecked=true;
             }
             else{
                 $("#alert-success").hide();
                 $("#alert-danger").show();
-                $("#submitbtn").hide();
+                PwdChecked=false;
             }
+            signUpValid();
         }
     });
-    $("#idCheckValid").click(()=>{
+    $("#inputId").keyup(()=>{
         console.log("idchk");
         $.ajax({
             url: "/idcheck",
@@ -45,12 +76,14 @@ $(document).ready(()=>{
                 if(result==1){
                     $("#idalert-success").show();
                     $("#idalert-danger").hide();
-                    $("#submitbtn").show();
+                    IdChecked=true;
                 }
                 else{
                     $("#idalert-success").hide();
                     $("#idalert-danger").show();
+                    IdChecked=false;
                 }
+                signUpValid();
             }
         });
     });

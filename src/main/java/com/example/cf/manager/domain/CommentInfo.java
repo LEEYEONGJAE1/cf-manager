@@ -26,7 +26,7 @@ public class CommentInfo {
     @JoinColumn(name="code")
     private PostingInfo postinginfo;
 
-    @Column(name="contents")
+    @Column(name="contents",length=5000)
     private String contents;
 
     @Column(name="addedTime")

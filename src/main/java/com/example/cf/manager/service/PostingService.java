@@ -31,14 +31,11 @@ public class PostingService {
 
     public Optional<PostingInfo> findById(Long code){
         Optional<PostingInfo> temp=postingRepository.findById(code);
-        temp.get().setViews(temp.get().getViews()+1);
-        postingRepository.save(temp.get());
         return temp;
     }
-
-    public void recievedLike(Long code){
+    public void increaseView(Long code,int view){
         Optional<PostingInfo> temp=postingRepository.findById(code);
-        temp.get().setViews(temp.get().getLikes()+1);
+        temp.get().setViews(temp.get().getViews()+view);
         postingRepository.save(temp.get());
     }
 

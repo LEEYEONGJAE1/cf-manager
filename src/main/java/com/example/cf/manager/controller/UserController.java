@@ -43,12 +43,12 @@ public class UserController {
         return "redirect:/";
     }
 
+
     @PostMapping("/user")
     public String signup(UserInfoDto infoDto) { // 회원 추가
         userService.save(infoDto);
         return "redirect:/";
     }
-
     @RequestMapping(value="/idcheck",method = RequestMethod.POST)
     @ResponseBody
     public int validId(UserInfoDto userInfoDto){

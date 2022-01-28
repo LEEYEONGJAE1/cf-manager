@@ -30,7 +30,7 @@ public class PostingInfo {
     @Column(name="title")
     private String title;
 
-    @Column(name="contents",length=10000)
+    @Column(name="contents")
     private String contents;
 
     @Column(name="addedTime")
