@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,7 @@ public class PostingController {
 
     @GetMapping("/question")
     public String question(Model model){
-        model.addAttribute("postings",postingService.findAll());
+        model.addAttribute("postings",postingService.findAllPosting());
         model.addAttribute("onlineJudgeSites", new SiteInfos().getList());
         return "posting/question";
     }
@@ -45,10 +46,8 @@ public class PostingController {
     }
 
     @PostMapping("/posting/create")
-    public String addpost(@ModelAttribute("form") PostingInfoDto postingInfoDto, Authentication authentication){
-        UserInfo writer=(UserInfo) authentication.getPrincipal();
-        System.out.println(authentication.getPrincipal().getClass().getName());
-        postingInfoDto.setUserinfo(writer);
+    public String addpost(@ModelAttribute("form") PostingInfoDto postingInfoDto, @AuthenticationPrincipal UserInfo userInfo){
+        postingInfoDto.setUserinfo(userInfo);
         postingInfoDto.setViews(0L);
         postingInfoDto.setLikes(0L);
         SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
@@ -57,15 +56,15 @@ public class PostingController {
         return "redirect:/question";
     }
 
-    @PostMapping("/deleteposting")
-    public String deletePost(PostingInfoDto postingInfoDto,Authentication authentication){
-        postingService.delete(postingInfoDto.getCode(),authentication);
+    @PostMapping("/posting/delete")
+    public String deletePost(PostingInfoDto postingInfoDto,@AuthenticationPrincipal UserInfo userInfo){
+       postingService.deletePosting(postingInfoDto.getCode(),userInfo);
         return "redirect:/question";
     }
 
     @GetMapping("/posting/update/{code}")
-    public String editPost(@PathVariable("code") Long code,Model model,Authentication authentication){
-        if(checkUser(code,authentication)) {
+    public String editPost(@PathVariable("code") Long code,Model model,@AuthenticationPrincipal UserInfo userInfo){
+        if(postingService.checkUserValid(code,userInfo)){
             Optional<PostingInfo> temp = postingService.findById(code);
             if (temp.isPresent()) {
                 model.addAttribute("posting", temp.get());
@@ -77,9 +76,8 @@ public class PostingController {
     }
 
     @PutMapping("/posting/update/{code}")
-    public String putEdit(@PathVariable("code") Long code, PostingInfoDto postingdto,Authentication authentication){
-        if(checkUser(code,authentication))
-            postingService.update(code,postingdto);
+    public String putEdit(@PathVariable("code") Long code, PostingInfoDto postingInfoDto,@AuthenticationPrincipal UserInfo userInfo){
+        postingService.updatePosting(code,postingInfoDto,userInfo);
         return "redirect:/question";
     }
 
@@ -98,28 +96,19 @@ public class PostingController {
     }
 
     @PostMapping("/posting/view/{code}")
-    public String postComment(@PathVariable("code") Long code, CommentInfoDto commentDTO, Authentication authentication){
-        UserInfo writerInfo=(UserInfo) authentication.getPrincipal();
-        commentDTO.setUserinfo(writerInfo);
+    public String postComment(@PathVariable("code") Long code, CommentInfoDto commentInfoDto, @AuthenticationPrincipal UserInfo userInfo){
         SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
-        commentDTO.setAddedTime(format.format(new Date()));
-        commentDTO.setPostinginfo(postingService.findById(code).get());
-        commentService.save(commentDTO);
+        commentInfoDto.setAddedTime(format.format(new Date()));
+        commentInfoDto.setUserinfo(userInfo);
+        commentInfoDto.setPostinginfo(postingService.findById(code).get());
+        commentService.save(commentInfoDto);
         return "redirect:/posting/view/"+Long.toString(code);
     }
 
-    @GetMapping("/cdelete/{pcode}/{ccode}")
-    public String deleteComment(@PathVariable("ccode") Long userCode,@PathVariable("pcode") Long postingCode,Authentication authentication){
-        UserInfo myInfo=(UserInfo) authentication.getPrincipal();
-        if(myInfo.getUserid().equals(commentService.findById(userCode).get().getUserinfo().getUserid()))
-            commentService.delete(userCode);
-        return "redirect:/posting/view/"+Long.toString(postingCode);
+    @GetMapping("/comment/delete/{PostingCode}/{CommentCode}")
+    public String deleteComment(@PathVariable("PostingCode") Long PostingCode,@PathVariable("CommentCode") Long CommentCode,@AuthenticationPrincipal UserInfo userInfo){
+        commentService.deleteComment(CommentCode,userInfo);
+        return "redirect:/posting/view/"+Long.toString(PostingCode);
     }
 
-    public Boolean checkUser(Long code,Authentication authentication){
-        UserInfo me=(UserInfo) authentication.getPrincipal();
-        if(me.getUserid().equals(postingService.findById(code).get().getUserinfo().getUserid()))
-            return Boolean.TRUE;
-        return Boolean.FALSE;
-    }
 }

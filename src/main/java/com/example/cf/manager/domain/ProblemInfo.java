@@ -17,8 +17,9 @@ public class ProblemInfo {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long code;
 
-    @Column(name="userid")
-    private String userid;
+    @ManyToOne
+    @JoinColumn(name="userid")
+    private UserInfo userinfo;
 
     @Column(name="problemName")
     private String problemName;
@@ -34,8 +35,8 @@ public class ProblemInfo {
 
 
     @Builder
-    public ProblemInfo(String userid, String problemName,String problemLink,String addedTime,Boolean bookmarked) {
-        this.userid = userid;
+    public ProblemInfo(UserInfo userInfo, String problemName,String problemLink,String addedTime,Boolean bookmarked) {
+        this.userinfo = userInfo;
         this.problemName=problemName;
         this.problemLink=problemLink;
         this.addedTime=addedTime;

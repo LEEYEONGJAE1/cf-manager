@@ -9,9 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -25,6 +23,12 @@ public class UserInfo implements UserDetails {
 
     @Column(name = "userid", unique = true)
     private String userid;
+
+    @OneToMany(mappedBy = "userinfo", cascade = CascadeType.REMOVE) //영속성
+    private List<CommentInfo> commentInfos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "userinfo", cascade = CascadeType.REMOVE) //영속성
+    private List<PostingInfo> postingInfos = new ArrayList<>();
 
     @Column(name = "password")
     private String password;
@@ -56,18 +60,6 @@ public class UserInfo implements UserDetails {
             roles.add(new SimpleGrantedAuthority(role));
         }
         return roles;
-    }
-
-    // 사용자의 id를 반환 (unique한 값)
-    @Override
-    public String getUsername() {
-        return userid;
-    }
-
-    // 사용자의 password를 반환
-    @Override
-    public String getPassword() {
-        return password;
     }
 
     // 계정 만료 여부 반환

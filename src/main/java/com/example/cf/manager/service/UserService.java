@@ -1,6 +1,5 @@
 package com.example.cf.manager.service;
 
-import com.example.cf.manager.domain.ProblemInfo;
 import com.example.cf.manager.domain.UserInfo;
 import com.example.cf.manager.repository.UserRepository;
 import com.example.cf.manager.dto.UserInfoDto;
@@ -10,7 +9,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.sql.*;
+import java.util.List;
+import java.util.Optional;
+
+import static org.eclipse.jdt.internal.compiler.problem.ProblemSeverities.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -31,9 +35,17 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException((userid)));
     }
 
-    public Boolean exists(String userid){
+    public Boolean isUserExistById(String userid){
         Boolean ret = userRepository.existsByUserid(userid);
         return ret;
+    }
+
+    public List<UserInfo> getAllUserInfo(){
+        return userRepository.findAll();
+    }
+
+    public void deleteUser(Long code){
+        userRepository.deleteById(code);
     }
 
     public Long save(UserInfoDto infoDto) {

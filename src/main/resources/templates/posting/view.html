@@ -32,6 +32,7 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li sec:authorize="hasRole('ROLE_ADMIN')" ><a class="dropdown-item" href="/admin">admin페이지</a></li>
                 <li><a class="dropdown-item" href="/logout">Logout</a></li>
             </ul>
         </li>
@@ -112,7 +113,7 @@
                                         <p th:text="|작성 시간: ${comment.addedTime}|"></p>
                                     </td>
                                     <td>
-                                        <button th:if="${comment.userinfo.userid}==${#authentication.principal.username}" type="button" class="btn btn-default" th:onclick="|location.href='/cdelete/${posting.code}/${comment.id}'|"><span class="glyphicon glyphicon-remove"></span>삭제</button>
+                                        <button th:if="${comment.userinfo.userid}==${#authentication.principal.username}" type="button" class="btn btn-default" th:onclick="|location.href='/comment/delete/${posting.code}/${comment.id}'|"><span class="glyphicon glyphicon-remove"></span>삭제</button>
                                     </td>
                                 </tr>
                             </tbody>

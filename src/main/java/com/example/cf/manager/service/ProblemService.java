@@ -7,6 +7,7 @@ import com.example.cf.manager.dto.UserInfoDto;
 import com.example.cf.manager.repository.ProblemRepository;
 import com.example.cf.manager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,28 +17,27 @@ import java.util.List;
 @Service
 public class ProblemService {
     private final ProblemRepository problemRepository;
-    public List<ProblemInfo> pinfo(String userid){
-        return problemRepository.findByUserid(userid);
+    public List<ProblemInfo> getAllProblemsByUserInfo(UserInfo userInfo){
+        return problemRepository.findByUserinfo(userInfo);
     }
-    public void deleteProblem(Long code){
+    public void deleteProblemByCode(Long code){
         problemRepository.deleteById(code);
     }
 
-    public void addBookmark(Long code){
+    public void addBookmarkByCode(Long code){
         ProblemInfo temp=problemRepository.getById(code);
         temp.setBookmarked(Boolean.TRUE);
         problemRepository.save(temp);
     }
-    public void deleteBookmark(Long code){
+    public void deleteBookmarkByCode(Long code){
         ProblemInfo temp=problemRepository.getById(code);
         temp.setBookmarked(Boolean.FALSE);
         problemRepository.save(temp);
     }
 
     public Long save(ProblemInfoDto problemDto) {
-
         return problemRepository.save(ProblemInfo.builder()
-                .userid(problemDto.getUserid())
+                .userInfo(problemDto.getUserInfo())
                 .problemName(problemDto.getProblemName())
                 .problemLink(problemDto.getProblemLink())
                 .addedTime(problemDto.getAddedTime())

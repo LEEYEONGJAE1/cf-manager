@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.CheckedInputStream;
 
 @RequiredArgsConstructor
 @Service
@@ -20,7 +21,7 @@ public class PostingService {
 
     private final PostingRepository postingRepository;
 
-    public List<PostingInfo> findAll(){
+    public List<PostingInfo> findAllPosting(){
         return postingRepository.findAll();
     }
 
@@ -30,8 +31,8 @@ public class PostingService {
 
 
     public Optional<PostingInfo> findById(Long code){
-        Optional<PostingInfo> temp=postingRepository.findById(code);
-        return temp;
+        Optional<PostingInfo> Posting=postingRepository.findById(code);
+        return Posting;
     }
     public void increaseView(Long code,int view){
         Optional<PostingInfo> temp=postingRepository.findById(code);
@@ -39,20 +40,24 @@ public class PostingService {
         postingRepository.save(temp.get());
     }
 
-    public void update(Long code,PostingInfoDto newposting){
-        Optional<PostingInfo> originalposting=postingRepository.findById(code);
-        originalposting.get().setTitle(newposting.getTitle());
-        originalposting.get().setContents(newposting.getContents());
-        postingRepository.save(originalposting.get());
+    public void updatePosting(Long code,PostingInfoDto newposting,UserInfo userInfo) {
+        Optional<PostingInfo> OriginalPosting = postingRepository.findById(code);
+        if (postingRepository.findById(code).get().getUserinfo().getUserid().equals(userInfo.getUserid())) {
+            OriginalPosting.get().setTitle(newposting.getTitle());
+            OriginalPosting.get().setContents(newposting.getContents());
+            postingRepository.save(OriginalPosting.get());
+        }
     }
 
-    public void delete(Long code, Authentication authentication){
-        UserInfo me=(UserInfo) authentication.getPrincipal();
-        if(me.getUserid().equals(postingRepository.findById(code).get().getUserinfo().getUserid())) {
+    public void deletePosting(Long code, UserInfo userInfo){
+        if(postingRepository.findById(code).get().getUserinfo().getUserid().equals(userInfo.getUserid())) {
+            System.out.println("deleted");
             postingRepository.deleteById(code);
-            System.out.println("deleted successfully");
         }
-        System.out.println("not deleted");
+    }
+
+    public Boolean checkUserValid(Long code,UserInfo userInfo){
+        return postingRepository.findById(code).equals(userInfo);
     }
 
     public Long save(PostingInfoDto postingDto) {

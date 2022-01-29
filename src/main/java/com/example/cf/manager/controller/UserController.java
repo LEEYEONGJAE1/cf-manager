@@ -49,11 +49,28 @@ public class UserController {
         userService.save(infoDto);
         return "redirect:/";
     }
+
+    @GetMapping("/admin")
+    public String admin(Model model){
+        List<UserInfo> infoList=userService.getAllUserInfo();
+        model.addAttribute("UserInfo",infoList);
+        model.addAttribute("onlineJudgeSites", new SiteInfos().getList()); //온라인 저지 사이트 목록
+        return "admin";
+    }
+
+    @PostMapping("/deleteuser")
+    public String delete(UserInfoDto userInfoDto,Authentication authentication)
+    {
+
+        userService.deleteUser(userInfoDto.getCode());
+        return "redirect:/admin";
+    }
+
     @RequestMapping(value="/idcheck",method = RequestMethod.POST)
     @ResponseBody
     public int validId(UserInfoDto userInfoDto){
         System.out.println(userInfoDto.getUserid());
-       if(userService.exists(userInfoDto.getUserid())){
+       if(userService.isUserExistById(userInfoDto.getUserid())){
             return 0;
         }
         else{

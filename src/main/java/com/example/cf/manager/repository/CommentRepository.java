@@ -12,5 +12,4 @@ import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<CommentInfo,Long>{
     List<CommentInfo> findByPostinginfo(PostingInfo postinginfo);
-    void deleteAllByPostinginfo(PostingInfo postingInfo);
 }
