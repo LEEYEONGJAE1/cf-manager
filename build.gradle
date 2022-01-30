@@ -13,17 +13,17 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
 	implementation 'mysql:mysql-connector-java'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
-	runtimeOnly 'mysql:mysql-connector-java:8.0.25'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'javax.servlet:jstl'
-	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 }

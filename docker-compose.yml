@@ -1,0 +1,28 @@
+version: "3"
+services:
+  #이건 서비스 명입니다.
+  cfdb:
+    # 컨테이너 이름을 설정하고 싶다면 작성하세요.
+    # container_name: cf
+    image: mysql
+    environment:
+      MYSQL_DATABASE: cf
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - 3306:3306
+
+  application:
+    build: .
+    image: lik1313/cf-manager
+    ports:
+      - 80:8080
+    depends_on:
+      - cfdb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://cfdb:3306/cf?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+
+
+
