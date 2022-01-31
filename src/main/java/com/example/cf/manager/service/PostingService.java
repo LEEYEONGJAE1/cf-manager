@@ -50,7 +50,7 @@ public class PostingService {
     }
 
     public void deletePosting(Long code, UserInfo userInfo){
-        if(postingRepository.findById(code).get().getUserinfo().getUserid().equals(userInfo.getUserid())) {
+        if(postingRepository.findById(code).get().getUserinfo().getUserid().equals(userInfo.getUserid())||userInfo.getAuth().equals("ROLE_ADMIN")) {
             System.out.println("deleted");
             postingRepository.deleteById(code);
         }

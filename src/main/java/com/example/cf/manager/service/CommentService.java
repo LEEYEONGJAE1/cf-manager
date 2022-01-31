@@ -25,7 +25,7 @@ public class CommentService {
     }
 
     public void deleteComment(Long code, UserInfo userInfo){
-        if(findById(code).get().getUserinfo().getUserid().equals(userInfo.getUserid()))
+        if(findById(code).get().getUserinfo().getUserid().equals(userInfo.getUserid()) || userInfo.getAuth().equals("ROLE_ADMIN"))
             commentRepository.deleteById(code);
     }
 

@@ -92,19 +92,22 @@
                                 </table>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-default" onclick="location.href='/problem/create'">
-                            <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span>
-                            문제 편집
-                        </button>
 
-                            <div class="row">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <button type="button" class="btn btn-default" onclick="location.href='/problem/create'">
+                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"> </span>
+                                    문제 편집
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row">
                             <div class="col-lg-6">
+
                                 <div class="card mb-4">
                                     <div class="card-header">
                                         <span class="glyphicon glyphicon-pencil"> 문제</span>
-
-
-
                                     </div>
 
                                     <div class="card-body">
@@ -131,7 +134,7 @@
 
                                                 </tr>
                                             </tbody>
-                                    </table>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -152,18 +155,17 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            <tr th:each="problem : ${problems}" >
-
-                                                <td >
-                                                    <a th:if="${problem.bookmarked}" th:href="${problem.problemLink}" th:text="${problem.problemName}"></a>
-                                                </td>
-                                                <td>
-                                                    <p th:if="${problem.bookmarked}" th:text="${problem.addedTime}"></p>
-                                                </td>
-                                                <td>
-                                                    <a th:if="${problem.bookmarked}" th:href="|/deletebookmark/${problem.code}|">북마크 제거</a>
-                                                </td>
-                                            </tr>
+                                                <tr th:each="problem : ${problems}" >
+                                                    <td >
+                                                        <a th:if="${problem.bookmarked}" th:href="${problem.problemLink}" th:text="${problem.problemName}"></a>
+                                                    </td>
+                                                    <td>
+                                                        <p th:if="${problem.bookmarked}" th:text="${problem.addedTime}"></p>
+                                                    </td>
+                                                    <td>
+                                                        <a th:if="${problem.bookmarked}" th:href="|/deletebookmark/${problem.code}|">북마크 제거</a>
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
