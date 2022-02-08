@@ -20,7 +20,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter { // 2
     @Override
     public void configure(WebSecurity web) { // 4@Override
             web.ignoring().antMatchers("/css/**", "/js/**" ,"/error", "/assets/**");
-
     }
 
     @Override
@@ -45,8 +44,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter { // 2
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception { // 9
         auth.userDetailsService(userService)
-                // 해당 서비스(userService)에서는 UserDetailsService를 implements해서
-                // loadUserByUsername() 구현해야함 (서비스 참고)
                 .passwordEncoder(new BCryptPasswordEncoder());
     }
 }

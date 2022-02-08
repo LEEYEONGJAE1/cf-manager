@@ -25,10 +25,9 @@ public class PostingService {
         return postingRepository.findAll();
     }
 
-    public List<PostingInfo> findByUserinfo(UserInfoDto userinfo){
-        return postingRepository.findByUserinfo(userinfo);
+    public List<PostingInfo> findPostingByKeyword(String keyword){
+        return postingRepository.findByTitleLike("%"+keyword+"%");
     }
-
 
     public Optional<PostingInfo> findById(Long code){
         Optional<PostingInfo> Posting=postingRepository.findById(code);
@@ -57,7 +56,7 @@ public class PostingService {
     }
 
     public Boolean checkUserValid(Long code,UserInfo userInfo){
-        return postingRepository.findById(code).equals(userInfo);
+        return postingRepository.findById(code).get().getUserinfo().getUserid().equals(userInfo.getUserid());
     }
 
     public Long save(PostingInfoDto postingDto) {

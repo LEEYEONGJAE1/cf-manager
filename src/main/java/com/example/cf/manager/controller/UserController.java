@@ -69,7 +69,6 @@ public class UserController {
     @RequestMapping(value="/idcheck",method = RequestMethod.POST)
     @ResponseBody
     public int validId(UserInfoDto userInfoDto){
-        System.out.println(userInfoDto.getUserid());
        if(userService.isUserExistById(userInfoDto.getUserid())){
             return 0;
         }
@@ -77,6 +76,4 @@ public class UserController {
             return 1;
         }
     }
-
-
 }

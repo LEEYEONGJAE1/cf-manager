@@ -1,6 +1,5 @@
 
 $(document).ready(()=>{
-    //대회 정보 불러오기
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
     if (sidebarToggle) {
         // Uncomment Below to persist sidebar toggle between refreshes

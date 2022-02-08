@@ -9,5 +9,6 @@ import java.util.Optional;
 
 public interface PostingRepository extends JpaRepository<PostingInfo,Long>{
     List<PostingInfo> findByUserinfo(UserInfoDto userinfo);
+    List<PostingInfo> findByTitleLike(String title);
     Optional<PostingInfo> findById(Long id);
 }

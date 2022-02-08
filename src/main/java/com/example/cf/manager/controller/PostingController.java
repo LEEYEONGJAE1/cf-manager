@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -32,8 +33,14 @@ public class PostingController {
     private final CommentService commentService;
 
     @GetMapping("/question")
-    public String question(Model model){
-        model.addAttribute("postings",postingService.findAllPosting());
+    public String question(Model model,@RequestParam Map<String, String> param){
+        if(param.get("keyword")==null){
+            model.addAttribute("postings",postingService.findAllPosting());
+        }
+        else{
+            String keyword=param.get("keyword");
+            model.addAttribute("postings",postingService.findPostingByKeyword(keyword));
+        }
         model.addAttribute("onlineJudgeSites", new SiteInfos().getList());
         return "posting/question";
     }
